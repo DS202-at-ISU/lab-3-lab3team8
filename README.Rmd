@@ -33,13 +33,117 @@ Get the data into a format where the five columns for Death[1-5] are replaced by
 
 Similarly, deal with the returns of characters.
 
-Based on these datasets calculate the average number of deaths an Avenger suffers. 
+Based on these datasets calculate the average number of deaths an Avenger suffers.
+
+## Data Tidying
+
+```{r}
+av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+head(av)
+```
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(readr)
+
+deaths <- av %>%
+  rowwise() %>%  
+  mutate(
+    Time = sum(c_across(starts_with("Death")) == "YES", na.rm = TRUE),
+    #if they died more than they returned, then the Death column is "YES"
+    Returned = if_else( Time > sum(c_across(starts_with("Return")) == "YES", na.rm = TRUE), "NO", "YES"),
+    Death = if_else(Returned == "YES", "NO", "YES"))%>%
+    #end Death calc  
+  ungroup() %>%
+  select(-Death1, -Death2, -Death3, -Death4, -Death5, -Return1, -Return2, -Return3, -Return4, -Return5)
+
+deaths
+```
+
+Average deaths suffered for an Avenger:
+```{r}
+mean(deaths$Time)
+```
 
 ## Individually
 
 For each team member, copy this part of the report. 
 
 Each team member picks one of the statements in the FiveThirtyEight [analysis](https://fivethirtyeight.com/features/avengers-death-comics-age-of-ultron/) and fact checks it based on the data. Use dplyr functionality whenever possible.
+
+### FiveThirtyEight Statement
+
+> Quote the statement you are planning to fact-check.
+
+### Include the code
+
+Make sure to include the code to derive the (numeric) fact for the statement
+
+### Include your answer
+
+Include at least one sentence discussing the result of your fact-checking endeavor.
+
+Upload your changes to the repository. Discuss and refine answers as a team.
+
+
+## Team Member Hudson Nebbe
+
+
+### FiveThirtyEight Statement
+
+> Out of 173 listed Avengers, my analysis found that 69 had died at least one time after they joined the team.5 That’s about 40 percent of all people who have ever signed on to the team.
+
+### Include the code
+
+``` {r}
+hnn <- deaths %>% filter(Time > 0) %>% count()
+#number of Time rows greater than 0
+hnn
+
+#number of Time rows greater than 0 divided by number of avengers
+hnn/173
+
+```
+
+### Include your answer
+
+Using the dplyr filter and count methods, I was able to determine that the number 69 does make sense according to the article. After that I checked to make sure the percentage that the author gave made sense. This statement seems factually backed!
+
+## Team Member Huy Nguyen
+
+### FiveThirtyEight Statement
+
+> Quote the statement you are planning to fact-check.
+
+### Include the code
+
+Make sure to include the code to derive the (numeric) fact for the statement
+
+### Include your answer
+
+Include at least one sentence discussing the result of your fact-checking endeavor.
+
+Upload your changes to the repository. Discuss and refine answers as a team.
+
+## Team Member Jack Olsan
+
+### FiveThirtyEight Statement
+
+> Quote the statement you are planning to fact-check.
+
+### Include the code
+
+Make sure to include the code to derive the (numeric) fact for the statement
+
+### Include your answer
+
+Include at least one sentence discussing the result of your fact-checking endeavor.
+
+Upload your changes to the repository. Discuss and refine answers as a team.
+
+## Team Member Madhu Avula
 
 ### FiveThirtyEight Statement
 
