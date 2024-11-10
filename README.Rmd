@@ -147,14 +147,29 @@ Upload your changes to the repository. Discuss and refine answers as a team.
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> “The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta — an android based on Janet van Dyne and built by Ultron — who has been destroyed five times and then recovered five times.”
 
 ### Include the code
 
-Make sure to include the code to derive the (numeric) fact for the statement
+```{r}
+jocasta_data <- av %>%
+  filter(grepl("Jocasta", Name.Alias))  # Adjust if necessary for exact match
+
+# Count Jocasta’s deaths
+deaths_count <- jocasta_data %>%
+  select(starts_with("Death")) %>%
+  summarise(total_deaths = sum(. == "YES", na.rm = TRUE))
+
+# Count Jocasta’s returns
+returns_count <- jocasta_data %>%
+  select(starts_with("Return")) %>%
+  summarise(total_returns = sum(. == "YES", na.rm = TRUE))
+
+deaths_count$total_deaths
+returns_count$total_returns
+```
 
 ### Include your answer
-
-Include at least one sentence discussing the result of your fact-checking endeavor.
+Based on the analysis, Jocasta has indeed been recorded as having 5 total deaths and 5 returns in the Avengers data set. This confirms the FiveThirtyEight statement about Jocasta being destroyed five times and recovered five times. The statement is accurate based on the data set provided.
 
 Upload your changes to the repository. Discuss and refine answers as a team.
