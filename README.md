@@ -263,20 +263,24 @@ team.
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> I counted 89 total deaths — some unlucky Avengers are basically Meat Loaf with an E-ZPass — and on 57 occasions the individual made a comeback.
 
 ### Include the code
 
-Make sure to include the code to derive the (numeric) fact for the
-statement
+``` {r}
+# Count the total number of "YES" values in the Return columns
+total_comebacks <- av %>%
+  select(starts_with("Return")) %>%  # Select only the Return columns
+  summarise(total_returns = sum(. == "YES", na.rm = TRUE))  # Count all "YES" values across these columns
+
+total_comebacks$total_returns
+
+```
 
 ### Include your answer
 
-Include at least one sentence discussing the result of your
-fact-checking endeavor.
+I was checking the claim that of the 89 total deaths, 57 made a comeback. It would seem based on my result after checking the amount of YES values in the return column, that the claim is true. 
 
-Upload your changes to the repository. Discuss and refine answers as a
-team.
 
 ## Team Member Madhu Avula
 
