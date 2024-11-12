@@ -115,17 +115,38 @@ Using the dplyr filter and count methods, I was able to determine that the numbe
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> There’s a 2-in-3 chance that a member of the Avengers returned from their first stint in the afterlife, but only a 50 percent chance they recovered from a second or third death.
 
 ### Include the code
 
-Make sure to include the code to derive the (numeric) fact for the statement
+``` {r}
+# Calculate probability of return after first death using dplyr functionality (if there are more than 1 death, consider that figure returns after first death)
+return_prob <- deaths %>% filter(Time > 0) %>% 
+  group_by(Time) %>%
+  select(starts_with("Return")) %>%
+  summarise(
+    total_deaths = n(),
+    total_returns = sum(. == "YES", na.rm = TRUE),
+    prob_return = total_returns / total_deaths
+  )
+# Display the results
+return_prob[return_prob$Time == 1, ]
+
+# Calculate probability of return after second death using dplyr functionality
+return_prob_2 <- deaths %>% filter(Time == 3 | Time == 2) %>% 
+  select(starts_with("Return")) %>%
+  summarise(
+    total_deaths = n(),
+    total_returns = sum(. == "YES", na.rm = TRUE),
+    prob_return = total_returns / total_deaths
+  )
+
+# Display the results
+return_prob_2
+```
 
 ### Include your answer
-
-Include at least one sentence discussing the result of your fact-checking endeavor.
-
-Upload your changes to the repository. Discuss and refine answers as a team.
+While there’s 69% that a member of the Avengers returned from their first stint in the afterlife, comparing to the 2-in-3 (~ 67%) value of the statement, the chance they recovered from a second or third death is at only 40%, slightly lower than 50%.
 
 ## Team Member Jack Olsan
 

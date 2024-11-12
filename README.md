@@ -244,59 +244,131 @@ This statement seems factually backed!
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> There’s a 2-in-3 chance that a member of the Avengers returned from
+> their first stint in the afterlife, but only a 50 percent chance they
+> recovered from a second or third death.
 
 ### Include the code
 
-Make sure to include the code to derive the (numeric) fact for the
-statement
+``` r
+# Calculate probability of return after first death using dplyr functionality (if there are more than 1 death, consider that figure returns after first death)
+return_prob <- deaths %>% filter(Time > 0) %>% 
+  group_by(Time) %>%
+  select(starts_with("Return")) %>%
+  summarise(
+    total_deaths = n(),
+    total_returns = sum(. == "YES", na.rm = TRUE),
+    prob_return = total_returns / total_deaths
+  )
+```
+
+    ## Adding missing grouping variables: `Time`
+
+``` r
+# Display the results
+return_prob[return_prob$Time == 1, ]
+```
+
+    ## # A tibble: 1 × 4
+    ##    Time total_deaths total_returns prob_return
+    ##   <int>        <int>         <int>       <dbl>
+    ## 1     1           53            37       0.698
+
+``` r
+# Calculate probability of return after second death using dplyr functionality
+return_prob_2 <- deaths %>% filter(Time == 3 | Time == 2) %>% 
+  select(starts_with("Return")) %>%
+  summarise(
+    total_deaths = n(),
+    total_returns = sum(. == "YES", na.rm = TRUE),
+    prob_return = total_returns / total_deaths
+  )
+
+# Display the results
+return_prob_2
+```
+
+    ## # A tibble: 1 × 3
+    ##   total_deaths total_returns prob_return
+    ##          <int>         <int>       <dbl>
+    ## 1           15             6         0.4
 
 ### Include your answer
 
-Include at least one sentence discussing the result of your
-fact-checking endeavor.
-
-Upload your changes to the repository. Discuss and refine answers as a
-team.
+While there’s 69% that a member of the Avengers returned from their
+first stint in the afterlife, comparing to the 2-in-3 (~ 67%) value of
+the statement, the chance they recovered from a second or third death is
+at only 40%, slightly lower than 50%.
 
 ## Team Member Jack Olsan
 
 ### FiveThirtyEight Statement
 
-> I counted 89 total deaths — some unlucky Avengers are basically Meat Loaf with an E-ZPass — and on 57 occasions the individual made a comeback.
+> I counted 89 total deaths — some unlucky Avengers are basically Meat
+> Loaf with an E-ZPass — and on 57 occasions the individual made a
+> comeback.
 
 ### Include the code
 
-``` {r}
+``` r
 # Count the total number of "YES" values in the Return columns
 total_comebacks <- av %>%
   select(starts_with("Return")) %>%  # Select only the Return columns
   summarise(total_returns = sum(. == "YES", na.rm = TRUE))  # Count all "YES" values across these columns
 
 total_comebacks$total_returns
-
 ```
+
+    ## [1] 57
 
 ### Include your answer
 
-I was checking the claim that of the 89 total deaths, 57 made a comeback. It would seem based on my result after checking the amount of YES values in the return column, that the claim is true. 
-
+I was checking the claim that of the 89 total deaths, 57 made a
+comeback. It would seem based on my result after checking the amount of
+YES values in the return column, that the claim is true.
 
 ## Team Member Madhu Avula
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> “The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta —
+> an android based on Janet van Dyne and built by Ultron — who has been
+> destroyed five times and then recovered five times.”
 
 ### Include the code
 
-Make sure to include the code to derive the (numeric) fact for the
-statement
+``` r
+jocasta_data <- av %>%
+  filter(grepl("Jocasta", Name.Alias))  # Adjust if necessary for exact match
+
+# Count Jocasta’s deaths
+deaths_count <- jocasta_data %>%
+  select(starts_with("Death")) %>%
+  summarise(total_deaths = sum(. == "YES", na.rm = TRUE))
+
+# Count Jocasta’s returns
+returns_count <- jocasta_data %>%
+  select(starts_with("Return")) %>%
+  summarise(total_returns = sum(. == "YES", na.rm = TRUE))
+
+deaths_count$total_deaths
+```
+
+    ## [1] 5
+
+``` r
+returns_count$total_returns
+```
+
+    ## [1] 5
 
 ### Include your answer
 
-Include at least one sentence discussing the result of your
-fact-checking endeavor.
+Based on the analysis, Jocasta has indeed been recorded as having 5
+total deaths and 5 returns in the Avengers data set. This confirms the
+FiveThirtyEight statement about Jocasta being destroyed five times and
+recovered five times. The statement is accurate based on the data set
+provided.
 
 Upload your changes to the repository. Discuss and refine answers as a
 team.
